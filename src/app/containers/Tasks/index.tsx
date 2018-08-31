@@ -1,4 +1,4 @@
-import { fetchAssignments, submitSolution } from 'core/actions';
+import { fetchAssignments, submitAssignment } from 'core/actions';
 import { IAssignment } from 'core/models';
 import { RootState } from 'core/reducers';
 import { classNames } from 'core/styles';
@@ -9,80 +9,55 @@ import { CardDeck } from 'reactstrap';
 
 const cn = classNames(require('./index.scss'));
 
-const mapStateToProps = (state: RootState, props: any): AssigmentContainerProps => {
-    if (state.assignments == null) {
-        return props;
-    }
-    return {
-        ...props,
-        isLoading: state.assignments.isLoading,
-        courseId: props.match.params.id,
-        studentId: state.user.username,
-        assignments: state.assignments,
-    };
-};
-
-const mapDispatchToProps = (dispatch: any, props: any): AssigmentContainerProps => {
-    return {
-        ...props,
-        onLoad: (courseId: string) => {
-            dispatch(fetchAssignments(courseId));
-        },
-        submitTask: (assignment: IAssignment) => {
-            dispatch(submitSolution(assignment));
-        },
-    };
-};
-
 type AssigmentContainerProps = {
     onLoad: (courseId: string) => void;
-    submitTask: (assignment: IAssignment) => void;
+    submitForm: (assignment: IAssignment) => void;
     studentId: string;
     courseId: string;
     isLoading: boolean;
     error: boolean | undefined;
-    assignments: any;
+    assignments: IAssignment[];
 };
 
 const Temp = {
-    github: 'fdsfsd',
+    github: 'fdfs',
     score: 100,
 };
 
 class Tasks extends React.Component<AssigmentContainerProps> {
-    constructor(props: AssigmentContainerProps) {
-        super(props);
-    }
-
     async componentDidMount() {
         const { courseId } = this.props;
         await this.props.onLoad(courseId);
     }
 
     generateTasks() {
-        const { assignments } = this.props.assignments;
-        const { submitTask } = this.props;
-        if (assignments && assignments.length > 0) {
-            return assignments.map((item: any, i: number) => {
-                const props = {
-                    title: item.title,
-                    urlToDescription: item.urlToDescription,
-                    taskId: item.taskId,
-                    studentId: item.studentId,
-                    status: item.status,
-                    score: item.score,
-                    courseId: item.courseId,
-                    submit: submitTask,
-                };
-                return <TaskForm key={i} {...props} />;
-            });
+        const { assignments } = this.props;
+        const { submitForm, isLoading, error } = this.props;
+        if (!isLoading && !error) {
+            if (assignments && assignments.length > 0) {
+                return assignments.map((item: any, i: number) => {
+                    const props = {
+                        title: item.title,
+                        urlToDescription: item.urlToDescription,
+                        taskId: item.taskId,
+                        studentId: item.studentId,
+                        status: item.status,
+                        score: item.score,
+                        courseId: item.courseId,
+                        submitForm,
+                    };
+                    return <TaskForm key={i} {...props} />;
+                });
+            } else {
+                return 'There is no one task';
+            }
         } else {
-            return 'There is no one task';
+            return null;
         }
     }
 
     render() {
-        const { isLoading, error } = this.props;
+        const { isLoading } = this.props;
         return (
             <div className={cn('tasks')}>
                 <h2>Tasks</h2>
@@ -104,19 +79,38 @@ class Tasks extends React.Component<AssigmentContainerProps> {
                                 <p>Full Score: {Temp.score}</p>
                             </div>
                         </div>
-                        <CardDeck>
-                            {(() => {
-                                if (!isLoading && !error) {
-                                    return this.generateTasks();
-                                }
-                            })()}
-                        </CardDeck>
+                        <CardDeck>{this.generateTasks()}</CardDeck>
                     </section>
                 )}
             </div>
         );
     }
 }
+
+const mapStateToProps = (state: RootState, props: any): AssigmentContainerProps => {
+    if (state.assignments == null) {
+        return props;
+    }
+    return {
+        ...props,
+        isLoading: state.assignments.isLoading,
+        courseId: props.match.params.id,
+        studentId: state.user.username,
+        assignments: state.assignments.assignments,
+    };
+};
+
+const mapDispatchToProps = (dispatch: any, props: any): AssigmentContainerProps => {
+    return {
+        ...props,
+        onLoad: (courseId: string) => {
+            dispatch(fetchAssignments(courseId));
+        },
+        submitForm: (assignment: IAssignment) => {
+            dispatch(submitAssignment(assignment));
+        },
+    };
+};
 
 export default connect(
     mapStateToProps,

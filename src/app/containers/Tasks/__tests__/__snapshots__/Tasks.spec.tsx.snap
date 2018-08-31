@@ -3,6 +3,7 @@
 exports[`Tasks renders correctly if no data 1`] = `
 <Tasks
   courseId=""
+  error={false}
   isLoading={false}
   studentId=""
 />

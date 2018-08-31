@@ -1,4 +1,4 @@
-import { fetchAssignments, submitSolution } from '../';
+import { fetchAssignments, submitAssignment } from '../';
 import { ASSIGNMENT } from '../../constants';
 import { AssignmentStatus } from '../../models';
 import configureMockStore from 'redux-mock-store';
@@ -11,7 +11,7 @@ describe('Actions test', () => {
     let store: any;
     // set up a fake store for all our tests
     beforeEach(() => {
-        store = mockStore({ phoneNumbers: [] });
+        store = mockStore({});
     });
 
     describe('fetchAssignments test', () => {
@@ -19,7 +19,8 @@ describe('Actions test', () => {
             store
                 .dispatch(fetchAssignments('test'))
                 .then(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.LOADING }))
-                .then(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.FETCH_ASSIGNMENTS_OK }));
+                .then(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.FETCH_ASSIGNMENTS_OK }))
+                .catch(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.FAIL }));
         });
     });
 
@@ -27,7 +28,7 @@ describe('Actions test', () => {
         it('submit assignment ok', () => {
             store
                 .dispatch(
-                    submitSolution({
+                    submitAssignment({
                         taskId: 11,
                         courseId: 'string',
                         studentId: 'string',
@@ -43,7 +44,8 @@ describe('Actions test', () => {
                     }),
                 )
                 .then(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.LOADING }))
-                .then(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.SUBMIT_SOLUTION_OK }));
+                .then(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.SUBMIT_SOLUTION_OK }))
+                .catch(() => expect(store.getActions()).toContainEqual({ type: ASSIGNMENT.FAIL }));
         });
     });
 });

@@ -5,26 +5,21 @@ import ReduxFormInput from 'components/ReduxFormInput';
 import { InjectedFormProps, reduxForm, Field } from 'redux-form';
 
 type Props = {
-    submitApi: any;
+    submitForm: (assignment: any) => void;
     taskId: number;
     courseId: string;
 };
 
 export type FormData = {
-    taskRepo: string;
+    assignmentRepo: string;
     studentComment: string;
 };
 
 class FooterForm extends React.Component<Props & InjectedFormProps<FormData, Props>, any> {
-    constructor(props: any) {
-        super(props);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    }
-
     handleFormSubmit = (event: any) => {
-        const { submitApi, taskId, courseId } = this.props;
+        const { submitForm, taskId, courseId } = this.props;
         const { assignmentRepo, studentComment } = event;
-        submitApi({
+        submitForm({
             courseId,
             taskId,
             assignmentRepo,
@@ -33,14 +28,15 @@ class FooterForm extends React.Component<Props & InjectedFormProps<FormData, Pro
     };
 
     handleChange = (event: any) => {
-        this.setState({ [event.target.name]: event.target.value });
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
     };
 
     render() {
         const { handleSubmit } = this.props;
         return (
             <small className="text-muted">
-                <Form onSubmit={handleSubmit(this.handleFormSubmit)}>
+                <Form>
                     <FormGroup>
                         <Field
                             name="assignmentRepo"
@@ -65,7 +61,7 @@ class FooterForm extends React.Component<Props & InjectedFormProps<FormData, Pro
                             className="form-control form-control-sm"
                         />
                     </FormGroup>
-                    <Button type="submit" color="primary" size="sm">
+                    <Button onClick={handleSubmit(this.handleFormSubmit)} type="submit" color="primary" size="sm">
                         Submit
                     </Button>
                 </Form>

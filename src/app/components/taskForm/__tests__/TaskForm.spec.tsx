@@ -12,7 +12,7 @@ describe('TaskForm', () => {
                 status={''}
                 taskId={0}
                 score={0}
-                submit={jest.fn()}
+                submitForm={jest.fn()}
             />,
         );
         expect(output).toMatchSnapshot();
