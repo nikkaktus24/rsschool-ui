@@ -7,9 +7,11 @@ const { __stateGetter } = require('react-redux');
 type TasksType = any;
 const mockAssignments = [
     {
-        title: 'Test task',
-        urlToDescription: 'Test description',
-        taskId: 0,
+        taskId: {
+            _id: 0,
+            title: 'Test task',
+            urlToDescription: 'Test description',
+        },
         studentId: 'nikkaktus24',
         status: 'Assigned',
         score: 0,
@@ -17,7 +19,17 @@ const mockAssignments = [
     },
 ];
 
-const resultValue = <TaskForm key="0" submitForm={jest.fn()} {...mockAssignments[0]} />;
+const mockProps = {
+    title: 'Test task',
+    urlToDescription: 'Test description',
+    taskId: 0,
+    studentId: 'nikkaktus24',
+    status: 'Assigned',
+    score: 0,
+    courseId: 'rs-course-2018q3',
+};
+
+const resultValue = <TaskForm key="0" submitForm={jest.fn()} {...mockProps} />;
 
 describe('Tasks', () => {
     beforeEach(() => {

@@ -13,8 +13,8 @@ export async function getAssignmentsByCourseId(courseId: string) {
 }
 
 export function updateAssignment(assignment: IAssignment) {
-    const { courseId } = assignment;
+    const { courseId, taskId } = assignment;
     return axios
-        .patch<AssignmentsPostResponse>(`/api/course/${courseId}/assignment/`, assignment)
+        .patch<AssignmentsPostResponse>(`/api/course/${courseId}/assignment/${taskId}`, assignment)
         .then(response => response.data);
 }

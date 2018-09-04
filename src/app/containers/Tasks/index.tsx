@@ -1,5 +1,5 @@
 import { fetchAssignments, submitAssignment } from 'core/actions';
-import { IAssignment } from 'core/models';
+import { IAssignment, IAssignmentDestructuringState, IAssignmentDispatchAction, IAssignmentProps } from 'core/models';
 import { RootState } from 'core/reducers';
 import { classNames } from 'core/styles';
 import * as React from 'react';
@@ -9,37 +9,26 @@ import { CardDeck } from 'reactstrap';
 
 const cn = classNames(require('./index.scss'));
 
-type AssigmentContainerProps = {
-    onLoad: (courseId: string) => void;
-    submitForm: (assignment: IAssignment) => void;
-    studentId: string;
-    courseId: string;
-    isLoading: boolean;
-    error: boolean | undefined;
-    assignments: IAssignment[];
-};
-
 const Temp = {
     github: 'fdfs',
     score: 100,
 };
 
-class Tasks extends React.Component<AssigmentContainerProps> {
+class Tasks extends React.Component<IAssignmentProps> {
     async componentDidMount() {
         const { courseId } = this.props;
         await this.props.onLoad(courseId);
     }
 
     generateTasks() {
-        const { assignments } = this.props;
-        const { submitForm, isLoading, error } = this.props;
+        const { assignments, submitForm, isLoading, error } = this.props;
         if (!isLoading && !error) {
             if (assignments && assignments.length > 0) {
                 return assignments.map((item: any, i: number) => {
                     const props = {
-                        title: item.title,
-                        urlToDescription: item.urlToDescription,
-                        taskId: item.taskId,
+                        title: item.taskId.title,
+                        urlToDescription: item.taskId.urlToDescription,
+                        taskId: item.taskId._id,
                         studentId: item.studentId,
                         status: item.status,
                         score: item.score,
@@ -87,12 +76,11 @@ class Tasks extends React.Component<AssigmentContainerProps> {
     }
 }
 
-const mapStateToProps = (state: RootState, props: any): AssigmentContainerProps => {
-    if (state.assignments == null) {
+const mapStateToProps = (state: RootState, props: any): IAssignmentDestructuringState => {
+    if (props == null) {
         return props;
     }
     return {
-        ...props,
         isLoading: state.assignments.isLoading,
         courseId: props.match.params.id,
         studentId: state.user.username,
@@ -100,9 +88,8 @@ const mapStateToProps = (state: RootState, props: any): AssigmentContainerProps 
     };
 };
 
-const mapDispatchToProps = (dispatch: any, props: any): AssigmentContainerProps => {
+const mapDispatchToProps = (dispatch: any): IAssignmentDispatchAction => {
     return {
-        ...props,
         onLoad: (courseId: string) => {
             dispatch(fetchAssignments(courseId));
         },

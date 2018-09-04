@@ -61,7 +61,7 @@ class FooterForm extends React.Component<Props & InjectedFormProps<FormData, Pro
                             className="form-control form-control-sm"
                         />
                     </FormGroup>
-                    <Button onClick={handleSubmit(this.handleFormSubmit)} type="submit" color="primary" size="sm">
+                    <Button onClick={handleSubmit(this.handleFormSubmit)} type="button" color="primary" size="sm">
                         Submit
                     </Button>
                 </Form>

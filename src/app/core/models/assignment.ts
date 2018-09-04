@@ -35,6 +35,22 @@ export interface IAssignment {
     status: AssignmentStatus;
 }
 
+export interface IAssignmentDestructuringState {
+    studentId: string;
+    courseId: string;
+    isLoading: boolean;
+    assignments: IAssignment[];
+}
+
+export interface IAssignmentDispatchAction {
+    onLoad: (courseId: string) => void;
+    submitForm: (assignment: IAssignment) => void;
+}
+
+export interface IAssignmentProps extends IAssignmentDestructuringState, IAssignmentDispatchAction {
+    error: boolean | undefined;
+}
+
 export interface IAssignmentDocument extends IAssignment {
     _id: string;
 }
